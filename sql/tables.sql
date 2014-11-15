@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS players (
+    id INTEGER PRIMARY KEY, 
+    name TEXT
+);
+
+/*CREATE TABLE IF NOT EXISTS skills (
+    id INTEGER PRIMARY KEY,
+);*/
