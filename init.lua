@@ -4,9 +4,9 @@ local worldpath = minetest.get_worldpath()
 package.path = package.path .. ";" .. modpath .. "/?.lua"
 package.cpath = package.cpath .. ";" .. modpath .. "/lib/?.so"
 local db = require("db")
-local Player = require("player")
+local MMOPlayer = require("mmoplayer")
 
-local players = {}
+local mmoplayers = {}
 
 db.init(modpath, worldpath)
 
@@ -17,8 +17,7 @@ end)
 
 minetest.register_on_joinplayer(function(player)
     local name = player:get_player_name()
-    -- db.add_player(name)
-    players[name] = Player(name, db)
+    mmoplayers[name] = MMOPlayer(name, db)
 end)
 
 local commands = {
@@ -36,12 +35,21 @@ minetest.register_chatcommand("mtmmo", {
     func = function(name, param)
         local found, _, command, subcommand = param:find("^([^%s]+)%s*([^%s]*)$")
         if found == nil then
-            --minetest.chat_send_player(name, "Invalid command: " .. param)
             return false, "Invalid command: " .. param
         end
         if command == "help" then
             local help_text = commands[subcommand] or commands["help"]
-            minetest.chat_send_player(name, help_text)
+            return true, help_text
+        elseif command == "skills" then
+            local mmoplayer = mmoplayers[name]
+            local skills = mmoplayer:skills()
+            local skill_text = "Skills\nName: Level (Experience)"
+            skill_text = skill_text .. "\n" .. string.rep("=", skill_text:len() - 6) .. "\n"
+            local template = "%s%s: %s (%s)\n"
+            for k, v in ipairs(mmoplayer._skills_master) do
+                skill_text = template:format(skill_text, v, skills[k].level, skills[k].experience)
+            end
+            mmoplayer:update_hud(skill_text, 5)
         end
 
         return true
