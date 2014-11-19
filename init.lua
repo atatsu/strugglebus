@@ -1,18 +1,20 @@
-
 local modpath = minetest.get_modpath(minetest.get_current_modname())
 local worldpath = minetest.get_worldpath()
 package.path = package.path .. ";" .. modpath .. "/?.lua"
-package.cpath = package.cpath .. ";" .. modpath .. "/lib/?.so"
 local db = require("db")
 local MMOPlayer = require("mmoplayer")
+local constants = require("constants")
 
+-- stores currently connected players
 local mmoplayers = {}
 
 db.init(modpath, worldpath)
 
 minetest.register_on_dignode(function(pos, oldnode, digger)
-    --minetest.log("Node " .. oldnode.name .. " at " .. minetest.pos_to_string(pos) .. 
-    --    " dug by " .. digger:get_player_name())
+    minetest.chat_send_player(
+        digger:get_player_name(), 
+        "Node " .. oldnode.name .. " at " .. minetest.pos_to_string(pos)
+    )
 end)
 
 minetest.register_on_joinplayer(function(player)
@@ -46,7 +48,7 @@ minetest.register_chatcommand("mtmmo", {
             local skill_text = "Skills\nName: Level (Experience)"
             skill_text = skill_text .. "\n" .. string.rep("=", skill_text:len() - 6) .. "\n"
             local template = "%s%s: %s (%s)\n"
-            for k, v in ipairs(mmoplayer._skills_master) do
+            for k, v in ipairs(constants.SKILLS) do
                 skill_text = template:format(skill_text, v, skills[k].level, skills[k].experience)
             end
             mmoplayer:update_hud(skill_text, 5)

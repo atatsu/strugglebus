@@ -1,12 +1,4 @@
-local skills = {
-    "Digging",
-    "Mining",
-    "Lumberjacking",
-    "Cultivating"
-}
-
 local MMOPlayer = {}
-MMOPlayer._skills_master = skills
 MMOPlayer.__index = MMOPlayer
 
 setmetatable(MMOPlayer, {
@@ -21,7 +13,7 @@ function MMOPlayer.new(name, db)
     self._db = db
     if not self._db.add_player(self._name) then
         -- player didn't yet exist so we also need to initialize their skills
-        self._db.initialize_skills(self._name, skills)
+        self._db.initialize_skills(self._name)
     end
     -- load up the skills from the database
     self._skills = self._db.load_skills(self._name)
@@ -49,6 +41,9 @@ function MMOPlayer:update_hud(text, fade_time)
             self._player:hud_change(self._hud, "text", "")
         end)
     end
+end
+
+function MMOPlayer:update_stats(node_name)
 end
 
 return MMOPlayer

@@ -1,4 +1,5 @@
 local sqlite = require("lsqlite3")
+local constants = require("constants")
 
 local modpath
 local worldpath
@@ -41,9 +42,9 @@ function mod.add_player(name)
     end
 end
 
-function mod.initialize_skills(name, skills)
+function mod.initialize_skills(name)
     local sql
-    for k, v in ipairs(skills) do
+    for k, v in pairs(constants.SKILLS) do
         sql = (sql or "") .. string.format([[
             INSERT INTO skills (player_id, skill_id, level, experience)
             SELECT p.id, %s, 1, 0
