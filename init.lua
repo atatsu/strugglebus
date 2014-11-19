@@ -11,8 +11,12 @@ local mmoplayers = {}
 db.init(modpath, worldpath)
 
 minetest.register_on_dignode(function(pos, oldnode, digger)
+    local name = digger:get_player_name()
+    local mmoplayer = mmoplayers[name]
+    mmoplayer:node_dug(oldnode.name)
+
     minetest.chat_send_player(
-        digger:get_player_name(), 
+        name,
         "Node " .. oldnode.name .. " at " .. minetest.pos_to_string(pos)
     )
 end)

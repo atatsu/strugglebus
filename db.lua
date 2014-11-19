@@ -66,8 +66,8 @@ function mod.load_skills(name)
     minetest.log("verbose", "[mtmmo] -- " .. query)
     for x in db:nrows(query) do
         skills[x.skill_id] = {
-            ["level"] = x.level,
-            ["experience"] = x.experience
+            level = x.level,
+            experience = x.experience
         }
     end
     return skills
