@@ -94,7 +94,7 @@ function MMOPlayer:node_dug(node_name)
                     skill.level
                 )
             )
-            -- TODO: update stats in db
+            self._db.save_skill(self._name, skill_id, skill.level, skill.experience)
         end
     end
 end

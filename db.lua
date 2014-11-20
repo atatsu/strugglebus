@@ -6,9 +6,9 @@ local worldpath
 local db
 --local memdb
 
-local mod = {}
+local M = {}
 
-function mod.init(_modpath, _worldpath)
+function M.init(_modpath, _worldpath)
     modpath = _modpath
     worldpath = _worldpath
     db = sqlite.open(worldpath .. "/mtmmo.sqlite3")
@@ -23,14 +23,13 @@ function mod.init(_modpath, _worldpath)
     db:exec(sql)
 end
 
-function mod.add_player(name)
+function M.add_player(name)
     local id
     local query = string.format("SELECT id FROM players WHERE name='%s'", name)
     minetest.log("verbose", "[mtmmo] -- " .. query)
     for x in db:nrows(query) do
         -- player has already been added to the `players` table
-        id = x.id
-        return id
+        return x.id
     end
 
     if not id then
@@ -42,9 +41,10 @@ function mod.add_player(name)
     end
 end
 
-function mod.initialize_skills(name)
+function M.initialize_skills(name)
     local sql
     for k, v in pairs(constants.SKILLS) do
+        -- TODO: see if this can be combined into one INSERT
         sql = (sql or "") .. string.format([[
             INSERT INTO skills (player_id, skill_id, level, experience)
             SELECT p.id, %s, 1, 0
@@ -56,7 +56,7 @@ function mod.initialize_skills(name)
     db:exec(sql)
 end
 
-function mod.load_skills(name)
+function M.load_skills(name)
     local skills = {}
     local query = string.format([[
         SELECT skill_id, level, experience FROM skills s, players p
@@ -73,10 +73,24 @@ function mod.load_skills(name)
     return skills
 end
 
-function mod.close()
+function M.save_skill(name, skill_id, level, experience)
+    -- Saves a single skill (experience and level) for the player.
+    local query = string.format([[
+        UPDATE skills SET experience=%s, level=%s 
+        WHERE player_id IN (
+            SELECT id FROM players
+            WHERE name='%s'
+        )
+        AND skill_id=%s;
+    ]], experience, level, name, skill_id):gsub("\n", "")
+    minetest.log("verbose", "[mtmmo] -- " .. query)
+    db:exec(query)
+end
+
+function M.close()
     minetest.log("action", "[mtmmo] -- Closing database")
     db:close()
     --memdb:close()
 end
 
-return mod
+return M

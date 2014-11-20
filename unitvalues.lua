@@ -1,6 +1,6 @@
 local constants = require("constants")
 
-local unitvalues = {
+local M = {
     [constants.DIGGING] = {
         ["default:dirt_with_grass"] = 10,
         ["default:dirt"] = 10,
@@ -13,4 +13,4 @@ local unitvalues = {
     },
 }
 
-return unitvalues
+return M

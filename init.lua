@@ -26,6 +26,9 @@ minetest.register_on_joinplayer(function(player)
     mmoplayers[name] = MMOPlayer(name, db)
 end)
 
+-- TODO: register on leave and remove player from the `mmoplayers` table
+--       as well as save the player's stats
+
 local commands = {
     ["help"] = [[Available commands:
     skills (/mtmmo skills)

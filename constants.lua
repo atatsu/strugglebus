@@ -1,15 +1,15 @@
-local mod = {}
+local M = {}
 
-mod.DIGGING = 1
-mod.MINING = 2
-mod.LUMBERJACKING = 3
-mod.CULTIVATING = 4
+M.DIGGING = 1
+M.MINING = 2
+M.LUMBERJACKING = 3
+M.CULTIVATING = 4
 
-mod.SKILLS = {
-    [mod.CULTIVATING] = "Cultivating",
-    [mod.DIGGING] = "Digging",
-    [mod.LUMBERJACKING] = "Lumberjacking",
-    [mod.MINING] = "Mining",
+M.SKILLS = {
+    [M.CULTIVATING] = "Cultivating",
+    [M.DIGGING] = "Digging",
+    [M.LUMBERJACKING] = "Lumberjacking",
+    [M.MINING] = "Mining",
 }
 
-return mod
+return M

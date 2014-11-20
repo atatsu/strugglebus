@@ -3,6 +3,9 @@ CREATE TABLE IF NOT EXISTS players (
     name TEXT
 );
 
+CREATE UNIQUE INDEX IF NOT EXISTS idx_players_name 
+    ON players (name);
+
 CREATE TABLE IF NOT EXISTS skills (
     id INTEGER PRIMARY KEY,
     player_id INTEGER,
