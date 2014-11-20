@@ -2,7 +2,7 @@ local modpath = minetest.get_modpath(minetest.get_current_modname())
 local worldpath = minetest.get_worldpath()
 package.path = package.path .. ";" .. modpath .. "/?.lua"
 local db = require("db")
-local MMOPlayer = require("mmoplayer")
+local entities = require("entities")
 local constants = require("constants")
 
 -- stores currently connected players
@@ -23,7 +23,7 @@ end)
 
 minetest.register_on_joinplayer(function(player)
     local name = player:get_player_name()
-    mmoplayers[name] = MMOPlayer(name, db)
+    mmoplayers[name] = entities.MMOPlayer(name, db)
 end)
 
 -- TODO: register on leave and remove player from the `mmoplayers` table
@@ -58,7 +58,7 @@ minetest.register_chatcommand("mtmmo", {
             for k, v in ipairs(constants.SKILLS) do
                 skill_text = template:format(skill_text, v, skills[k].level, skills[k].experience)
             end
-            mmoplayer:update_hud(skill_text, 5)
+            mmoplayer:update_hud(skill_text, 10)
         end
 
         return true

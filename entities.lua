@@ -1,7 +1,10 @@
 local constants = require("constants")
 local unitvalues = require("unitvalues")
 
+local M = {}
+
 local MMOPlayer = {}
+M.MMOPlayer = MMOPlayer
 MMOPlayer.__index = MMOPlayer
 
 setmetatable(MMOPlayer, {
@@ -99,4 +102,4 @@ function MMOPlayer:node_dug(node_name)
     end
 end
 
-return MMOPlayer
+return M
