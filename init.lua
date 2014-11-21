@@ -4,6 +4,7 @@ package.path = package.path .. ";" .. modpath .. "/?.lua"
 local db = require("db")
 local entities = require("entities")
 local constants = require("constants")
+local settings = require("settings")
 
 -- stores currently connected players
 local mmoplayers = {}
@@ -15,10 +16,12 @@ minetest.register_on_dignode(function(pos, oldnode, digger)
     local mmoplayer = mmoplayers[name]
     mmoplayer:node_dug(oldnode.name)
 
-    minetest.chat_send_player(
-        name,
-        "Node " .. oldnode.name .. " at " .. minetest.pos_to_string(pos)
-    )
+    if settings.debug_mode then
+        minetest.chat_send_player(
+            name,
+            "Node " .. oldnode.name .. " at " .. minetest.pos_to_string(pos)
+        )
+    end
 end)
 
 minetest.register_on_joinplayer(function(player)
@@ -26,8 +29,13 @@ minetest.register_on_joinplayer(function(player)
     mmoplayers[name] = entities.MMOPlayer(name, db)
 end)
 
--- TODO: register on leave and remove player from the `mmoplayers` table
---       as well as save the player's stats
+minetest.register_on_leaveplayer(function(player)
+    error('POOP DICK')
+    local name = player:get_player_name()
+    local mmoplayer = mmoplayers[name]
+    mmoplayer:save_skills()
+    mmoplayers[name] = nil
+end)
 
 local commands = {
     ["help"] = [[Available commands:
@@ -51,14 +59,14 @@ minetest.register_chatcommand("mtmmo", {
             return true, help_text
         elseif command == "skills" then
             local mmoplayer = mmoplayers[name]
-            local skills = mmoplayer:skills()
+            local skills = mmoplayer.skills
             local skill_text = "Skills\nName: Level (Experience)"
             skill_text = skill_text .. "\n" .. string.rep("=", skill_text:len() - 6) .. "\n"
             local template = "%s%s: %s (%s)\n"
             for k, v in ipairs(constants.SKILLS) do
                 skill_text = template:format(skill_text, v, skills[k].level, skills[k].experience)
             end
-            mmoplayer:update_hud(skill_text, 10)
+            mmoplayer:update_hud(skill_text, settings.hud_fade_time)
         end
 
         return true

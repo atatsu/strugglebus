@@ -1,24 +1,35 @@
 local sqlite = require("lsqlite3")
 local constants = require("constants")
+local log = require("logger")
 
-local modpath
-local worldpath
 local db
---local memdb
 
 local M = {}
 
-function M.init(_modpath, _worldpath)
-    modpath = _modpath
-    worldpath = _worldpath
-    db = sqlite.open(worldpath .. "/mtmmo.sqlite3")
-    --memdb = sqlite.open_memory()
+--- Initializes the sqlite3 database.
+-- Creates a sqlite3 connection that is used for all 
+-- subsequent functions. Also reads the table definitions
+-- from `tables.sql` and executes them. 
+-- @param modpath Path to this mod's directory (so that it can locate
+--                `tables.sql`.
+-- @param worldpath Path to the world directory, which is where the
+--                  database file is created.
+-- @param conn An existing sqlite3 connection. If this parameter is supplied
+--             then this function forgoes creating the connection. This
+--             is useful for testing (so that a memory database can be
+--             passed in).
+function M.init(modpath, worldpath, conn)
+    if conn ~= nil then
+        db = conn
+    else
+        db = sqlite.open(worldpath .. "/mtmmo.sqlite3")
+    end
 
     -- create tables we'll be using
-    minetest.log("action", "[mtmmo] -- Creating tables")
+    log.action("Creating tables")
     local file = io.open(modpath .. "/tables.sql", "r")
     local sql = file:read("*all"):gsub("\n", "")
-    minetest.log("verbose", "[mtmmo] -- " .. sql)
+    log.verbose(sql)
     file:close()
     db:exec(sql)
 end
@@ -87,10 +98,35 @@ function M.save_skill(name, skill_id, level, experience)
     db:exec(query)
 end
 
+function M.save_skills(name, skills)
+    local sql = ""
+    local query_template = [[
+        UPDATE skills SET experience=%s, level=%s
+        WHERE player_id IN (
+            SELECT id FROM players
+            WHERE name='%s'
+        )
+        AND skill_id=%s;
+    ]]
+    for skill_id, _ in pairs(constants.SKILLS) do
+        local skill = skills[skill_id]
+        local experience = skill.experience
+        local level = skill.level
+        sql = sql .. string.format(
+            query_template,
+            skill.experience,
+            skill.level,
+            name,
+            skill_id
+        ):gsub("\n", "")
+    end
+    log.verbose(sql)
+    db:exec(sql)
+end
+
 function M.close()
-    minetest.log("action", "[mtmmo] -- Closing database")
+    log.action("Closing database")
     db:close()
-    --memdb:close()
 end
 
 return M

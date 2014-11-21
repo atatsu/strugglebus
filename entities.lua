@@ -22,7 +22,7 @@ function MMOPlayer.new(name, db)
         self._db.initialize_skills(self._name)
     end
     -- load up the skills from the database
-    self._skills = self._db.load_skills(self._name)
+    self.skills = self._db.load_skills(self._name)
     -- setup a hud to use for displaying various stats
     self._player = minetest.get_player_by_name(name)
     self._hud = self._player:hud_add({
@@ -34,10 +34,6 @@ function MMOPlayer.new(name, db)
         text = ""
     })
     return self
-end
-
-function MMOPlayer:skills()
-    return self._skills
 end
 
 function MMOPlayer:update_hud(text, fade_time)
@@ -65,7 +61,7 @@ function MMOPlayer:node_dug(node_name)
     end
 
     if exp ~= nil then
-        local skill = self._skills[skill_id]
+        local skill = self.skills[skill_id]
         skill.experience = skill.experience + exp
         minetest.log(
             "verbose", 
@@ -100,6 +96,11 @@ function MMOPlayer:node_dug(node_name)
             self._db.save_skill(self._name, skill_id, skill.level, skill.experience)
         end
     end
+end
+
+function MMOPlayer:save_skills()
+    minetest.log("verbose", string.format("[mtmmo] -- Saving skills for %s", self._name))
+    self._db.save_skills(self._name, self.skills)
 end
 
 return M
