@@ -15,14 +15,11 @@ setmetatable(MMOPlayer, {
 
 function MMOPlayer.new(name, db)
     local self = setmetatable({}, MMOPlayer)
-    self._name = name
+    self.name = name
     self._db = db
-    if not self._db.add_player(self._name) then
-        -- player didn't yet exist so we also need to initialize their skills
-        self._db.initialize_skills(self._name)
-    end
+    self.id = self._db.add_player(self.name)
     -- load up the skills from the database
-    self.skills = self._db.load_skills(self._name)
+    self.skills = self._db.load_skills(self.id)
     -- setup a hud to use for displaying various stats
     self._player = minetest.get_player_by_name(name)
     self._hud = self._player:hud_add({
@@ -67,40 +64,42 @@ function MMOPlayer:node_dug(node_name)
             "verbose", 
             string.format(
                 "[mtmmo] -- %s gained experience in %s, %s (%s)", 
-                self._name, 
+                self.name, 
                 constants.SKILLS[skill_id], 
                 exp, 
                 skill.experience
             )
         )
         if skill.experience >= skill.level * 100 then
+            -- player's skill leveled, save skill and send a notification
+            -- to the player informing them of the level gain
             skill.experience = skill.experience - skill.level * 100
             skill.level = skill.level + 1
             minetest.log(
                 "verbose",
                 string.format(
                     "[mtmmo] -- %s gained a level in %s, %s", 
-                    self._name, 
+                    self.name, 
                     constants.SKILLS[skill_id], 
                     skill.level 
                 )
             )
             minetest.chat_send_player(
-                self._name, 
+                self.name, 
                 string.format(
                     "You gained a level in %s! (%s)", 
                     constants.SKILLS[skill_id],
                     skill.level
                 )
             )
-            self._db.save_skill(self._name, skill_id, skill.level, skill.experience)
+            self._db.save_skill(self.id, skill_id, skill.level, skill.experience)
         end
     end
 end
 
 function MMOPlayer:save_skills()
-    minetest.log("verbose", string.format("[mtmmo] -- Saving skills for %s", self._name))
-    self._db.save_skills(self._name, self.skills)
+    minetest.log("verbose", string.format("[mtmmo] -- Saving skills for %s", self.name))
+    self._db.save_skills(self.id, self.skills)
 end
 
 return M

@@ -30,7 +30,6 @@ minetest.register_on_joinplayer(function(player)
 end)
 
 minetest.register_on_leaveplayer(function(player)
-    error('POOP DICK')
     local name = player:get_player_name()
     local mmoplayer = mmoplayers[name]
     mmoplayer:save_skills()
