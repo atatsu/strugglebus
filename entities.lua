@@ -4,7 +4,6 @@ local unitvalues = require("unitvalues")
 local M = {}
 
 local MMOPlayer = {}
-M.MMOPlayer = MMOPlayer
 MMOPlayer.__index = MMOPlayer
 
 setmetatable(MMOPlayer, {
@@ -101,5 +100,7 @@ function MMOPlayer:save_skills()
     minetest.log("verbose", string.format("[mtmmo] -- Saving skills for %s", self.name))
     self._db.save_skills(self.id, self.skills)
 end
+
+M.MMOPlayer = MMOPlayer
 
 return M

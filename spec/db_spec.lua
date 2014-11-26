@@ -14,7 +14,9 @@ describe("db", function()
     teardown(function()
         sqlite = nil
         db = nil
+        package.loaded["db"] = nil
         constants = nil
+        package.loaded["constants"] = nil
     end)
 
     before_each(function()

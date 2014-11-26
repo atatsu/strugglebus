@@ -14,9 +14,9 @@ a Linux distribution with a package manager it should be fairly trivial.
  * [LuaRocks](http://luarocks.org/) makes this easy to get 
 
 ## Configuration
-`hud_fade_time` - Controls the number of seconds that informative HUDs are displayed on 
+* `hud_fade_time` - Controls the number of seconds that informative HUDs are displayed on 
                   screen (for instance when running `mtmmo skills`). Default: `10`
-`database_name` - Name to give the database file that is created in the world's
+* `database_name` - Name to give the database file that is created in the world's
                   directory. Default: `mtmmo.sqlite3`
 
 ## Commands (in game)
