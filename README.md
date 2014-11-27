@@ -1,8 +1,16 @@
 Minetest MMO
 ============
-Version: 0.1.0
+Version: 0.1.0alpha
 
 ## What does this mod do?
+This mod was inspired by mcMMO but doesn't really aim to reproduce it. It'll
+have similarities I'm sure, but for the most part it's just my own spin
+on the idea.
+
+### Short term goals
+TODO
+
+### Long term goals
 TODO
 
 ## Requirements
