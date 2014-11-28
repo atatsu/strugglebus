@@ -1,12 +1,34 @@
 describe("entities", function()
 
     local entities
+    local mock_mt
+    local mock_player
 
     setup(function()
+        mock_player = {
+            hud_add = function(hud_def) 
+                return "testhudid"
+            end,
+            hud_change = function(id, stat, value) end,
+        }
+        mock_mt = {
+            setting_getbool = function(name) end,
+            setting_get = function(name) end,
+            log = function() end,
+            chat_send_player = function(name, msg) end,
+            get_player_by_name = function(name)
+                return mock_player
+            end, 
+            after = function(time, callback) end
+        }
+        _G.minetest = mock_mt
         entities = require("entities")
     end)
 
     teardown(function()
+        mock_player = nil
+        mock_mt = nil
+        _G.minetest = nil
         entities = nil
         package.loaded["entities"] = nil
     end)
@@ -16,36 +38,16 @@ describe("entities", function()
         local skills
         local db
         local mock_db
-        local mock_mt
-        local mock_player
 
         setup(function()
             db = require("db")
             mock_db = mock(db, true)
-            mock_player = {
-                hud_add = function(hud_def) 
-                    return "testhudid"
-                end,
-                hud_change = function(id, stat, value) end,
-            }
-            mock_mt = {
-                log = function() end,
-                chat_send_player = function(name, msg) end,
-                get_player_by_name = function(name)
-                    return mock_player
-                end, 
-                after = function(time, callback) end
-            }
-            _G.minetest = mock_mt
         end)
 
         teardown(function()
             db = nil
             package.loaded["db"] = nil
             mock_db = nil
-            mock_player = nil
-            mock_mt = nil
-            _G.minetest = nil
         end)
 
         describe("when created", function()

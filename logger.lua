@@ -1,19 +1,11 @@
 local M = {}
 
 M.verbose = function(msg)
-    if minetest ~= nil then
-        minetest.log("verbose", "[mtmmo] -- " .. msg)
-    else
-        --print(msg)
-    end
+    minetest.log("verbose", "[mtmmo] -- " .. msg)
 end
 
 M.action = function(msg)
-    if minetest ~= nil then
-        minetest.log("action", "[mtmmo] -- " .. msg)
-    else
-        --print(msg)
-    end
+    minetest.log("action", "[mtmmo] -- " .. msg)
 end
 
 return M
