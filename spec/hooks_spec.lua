@@ -9,21 +9,11 @@ describe("hooks", function()
     setup(function()
         mock_mt = require("minetest")
         mock_player = require("player")
-        stub(mock_mt, "register_on_joinplayer")
-        stub(mock_mt, "register_on_leaveplayer")
-        stub(mock_mt, "register_on_dignode")
-        stub(mock_mt, "register_chatcommand")
-        stub(mock_mt, "register_on_shutdown")
         entities = require("entities")
         MMOPlayer = entities.MMOPlayer
     end)
 
     teardown(function()
-        mock_mt.register_on_joinplayer:revert()
-        mock_mt.register_on_leaveplayer:revert()
-        mock_mt.register_on_dignode:revert()
-        mock_mt.register_chatcommand:revert()
-        mock_mt.register_on_shutdown:revert()
         mock_mt = nil
         entities = nil
         package.loaded["entities"] = nil
@@ -44,6 +34,22 @@ describe("hooks", function()
 
         local db
         local mock_db
+
+        setup(function()
+            stub(mock_mt, "register_on_joinplayer")
+            stub(mock_mt, "register_on_leaveplayer")
+            stub(mock_mt, "register_on_dignode")
+            stub(mock_mt, "register_chatcommand")
+            stub(mock_mt, "register_on_shutdown")
+        end)
+
+        teardown(function()
+            mock_mt.register_on_joinplayer:revert()
+            mock_mt.register_on_leaveplayer:revert()
+            mock_mt.register_on_dignode:revert()
+            mock_mt.register_chatcommand:revert()
+            mock_mt.register_on_shutdown:revert()
+        end)
 
         before_each(function()
             db = require("db")
@@ -81,7 +87,7 @@ describe("hooks", function()
             assert.stub(mock_mt.register_chatcommand).was.called_with(
                 "mtmmo",
                 {
-                    params = "<command>",
+                    params = "<command> (Use '/mtmmo help' for more info)",
                     func = hooks._process_chatcommand
                 }
             )
@@ -209,7 +215,7 @@ describe("hooks", function()
             MMOPlayer.skills = nil
             constants = nil
             package.loaded["constants"] = nil
-            hooks.mmoplayers["testplayer"] = nil
+            --hooks.mmoplayers["testplayer"] = nil
         end)
 
 
@@ -225,44 +231,106 @@ describe("hooks", function()
             assert.are.equal("Invalid subcommand: notacommand", message)
         end)
 
-        it("when supplied with 'help' and an unknown subcommand should return general help text", function()
-            local success, message = hooks._process_chatcommand("testplayer", "help notacommand")
-            assert.is_true(success)
-            assert.are.equal(constants.HELP.help, message)
+        describe("when supplied with 'help'", function()
+
+            it("and an unknown subcommand should return general help text", function()
+                local success, message = hooks._process_chatcommand("testplayer", "help notacommand")
+                assert.is_true(success)
+                assert.are.equal(constants.HELP.help, message)
+            end)
+
+            it("should return the general help text", function()
+                local success, message = hooks._process_chatcommand("testplayer", "help")
+                assert.is_true(success)
+                assert.are.equal(constants.HELP.help, message)
+            end)
+
+            it("and 'skills' should return the help text for the 'skills' subcommand", function()
+                local success, message = hooks._process_chatcommand("testplayer", "help skills")
+                assert.is_true(success)
+                assert.are.equal(constants.HELP.skills, message)
+            end)
+
+            it("and 'ranks' should return the help text for the 'rank' subcommand", function()
+                local success, message = hooks._process_chatcommand("testplayer", "help ranks")
+                assert.is_true(success)
+                assert.are.equal(constants.HELP.ranks, message)
+            end)
+
         end)
 
-        it("when supplied with 'help' should return the general help text", function()
-            local success, message = hooks._process_chatcommand("testplayer", "help")
-            assert.is_true(success)
-            assert.are.equal(constants.HELP.help, message)
+        describe("when supplied with 'skills'", function()
+
+            it("should update the player's HUD with all their skills", function()
+                stub(MMOPlayer, "update_hud")
+                local success = hooks._process_chatcommand("testplayer", "skills")
+                assert.is_true(success)
+                local expected_text = "Skills\nName: Level (Experience)\n========================\n"
+                for i, v in ipairs(skills) do
+                    expected_text = string.format(
+                        "%s%s: %s (%s)\n", 
+                        expected_text, 
+                        constants.SKILLS[i], 
+                        v.level, 
+                        v.experience
+                    )
+                end
+                assert.stub(MMOPlayer.update_hud).was.called(1)
+                --assert.are.equal(expected_text, MMOPlayer.update_hud.calls[1][2]) -- [1][1] is the stub itself
+                --assert.are.equal(5, MMOPlayer.update_hud.calls[1][3])
+                assert.stub(MMOPlayer.update_hud).was.called_with(
+                    MMOPlayer, 
+                    expected_text, 
+                    settings.hud_fade_time
+                )
+                MMOPlayer.update_hud:revert()
+            end)
+
         end)
 
-        it("when supplied with 'help skills' should return the help text for the 'skills' subcommand", function()
-            local success, message = hooks._process_chatcommand("testplayer", "help skills")
-            assert.is_true(success)
-            assert.are.equal(constants.HELP.skills, message)
-        end)
+        describe("when supplied with 'ranks'", function()
 
-        it("when supplied with 'help rank' should return the help text for the 'rank' subcommand", function()
-            local success, message = hooks._process_chatcommand("testplayer", "help rank")
-            assert.is_true(success)
-            assert.are.equal(constants.HELP.rank, message)
-        end)
+            local db
 
-        it("when supplied with 'skills' should update the player's HUD with all their skills", function()
-            stub(MMOPlayer, "update_hud")
-            local success = hooks._process_chatcommand("testplayer", "skills")
-            assert.is_true(success)
-            local expected_text = "Skills\nName: Level (Experience)\n"
-            expected_text = expected_text .. string.rep("=", expected_text:len() - 8) .. "\n"
-            for i, v in ipairs(skills) do
-                expected_text = string.format("%s%s: %s (%s)\n", expected_text, constants.SKILLS[i], v.level, v.experience)
-            end
-            assert.stub(MMOPlayer.update_hud).was.called(1)
-            --assert.are.equal(expected_text, MMOPlayer.update_hud.calls[1][2]) -- [1][1] is the stub itself
-            --assert.are.equal(5, MMOPlayer.update_hud.calls[1][3])
-            assert.stub(MMOPlayer.update_hud).was.called_with(MMOPlayer, expected_text, settings.hud_fade_time)
-            MMOPlayer.update_hud:revert()
+            before_each(function()
+                db = require("db")
+                -- monkey patching isn't very desirable, but oh well
+                db.get_ranks = function()
+                    return {
+                        {name = "testplayer2", rank = 16},
+                        {name = "testplayer1", rank = 8},
+                        {name = "testplayer3", rank = 4}
+                    }
+                end
+                spy.on(db, "get_ranks")
+                stub(MMOPlayer, "update_hud")
+            end)
+
+            after_each(function()
+                db = nil
+                package.loaded["db"] = nil
+                MMOPlayer.update_hud:revert()
+            end)
+
+            it("should get a list of all player's level totals from the database", function()
+                local success = hooks._process_chatcommand("testplayer", "ranks")
+                assert.spy(db.get_ranks).was.called(1)
+            end)
+
+            it("should output ranks to the player that issued the command", function()
+                local expected_text = "Ranks\nName: Rank\n==========\n"
+                expected_text = expected_text .. "testplayer2: 16\ntestplayer1: 8\ntestplayer3: 4\n"
+                stub(MMOPlayer, "update_hud")
+                local success = hooks._process_chatcommand("testplayer", "ranks")
+                --assert.are.equal(expected_text, MMOPlayer.update_hud.calls[1][2])
+                assert.stub(MMOPlayer.update_hud).was.called_with(
+                    MMOPlayer,
+                    expected_text,
+                    settings.hud_fade_time
+                )
+                MMOPlayer.update_hud:revert()
+            end)
+
         end)
     end)
 end)

@@ -48,7 +48,7 @@ function M.add_player(name)
     log.verbose(query)
     db:exec(query, function(udata, cols, values, names) 
         id = tonumber(values[1]) 
-        return 0
+        return 0 -- lsqlite3 wants callback to return 0 if successful
     end)
 
     if not id then
@@ -60,7 +60,7 @@ function M.add_player(name)
         log.verbose(query)
         db:exec(query, function(udata, cols, values, names)
             id = tonumber(values[1])
-            return 0
+            return 0 -- lsqlite3 wants callback to return 0 if successful
         end)
 
         -- now initialize all the player's skills
@@ -79,9 +79,9 @@ end
 
 --- Retrieve an up-to-date table of a player's skills.
 -- @param player_id Id of the player.
--- @return A table in the form of:
---         {skill_id1 = {level = x, experience = x},
---          skill_id2 = {level = x, experience = x}}
+-- @return table Player's skills in the form of:
+--               {skill_id1 = {level = x, experience = x},
+--                skill_id2 = {level = x, experience = x}}
 function M.load_skills(player_id)
     local skills = {}
     local query = string.format([[
@@ -143,6 +143,30 @@ function M.save_skills(player_id, skills)
     db:exec(sql)
 end
 
+--- Get a sum of each player's skill levels.
+-- The returned players are in descending order according to the
+-- sum of their levels.
+-- @return table Each player's rank in the form of:
+--               {[1] = {name = "player1", rank = 10},
+--                [2] = {name = "player2", rank = 8},
+--                [3] = {name = "player3", rank = 3}}
+function M.get_ranks()
+    local query = string.gsub([[
+        SELECT p.name AS name, SUM(s.level) AS rank
+        FROM players p, skills s
+        WHERE s.player_id = p.id
+        GROUP BY s.player_id
+        ORDER BY rank DESC;
+    ]], "\n", "")
+    log.verbose(query)
+    local ranks = {}
+    for x in db:nrows(query) do
+        ranks[#ranks+1] = {name = x.name, rank = x.rank}
+    end
+    return ranks
+end
+
+--- Closes the database.
 function M.close()
     log.action("Closing database")
     db:close()

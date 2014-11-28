@@ -17,7 +17,8 @@ TODO
 This mod will not work unless the below requirements are satisfied. Please refer to their
 respective documentations if you need help getting them setup/configured. If you're using
 a Linux distribution with a package manager it should be fairly trivial.
-* [SQLite3](http://www.sqlite.org/)
+* Minetest 0.4.10
+* [SQLite3](http://www.sqlite.org/) (I'm using 3.8.7.2)
 * [LuaSQLite3](http://lua.sqlite.org/index.cgi/home)
  * [LuaRocks](http://luarocks.org/) makes this easy to get 
 
@@ -37,7 +38,7 @@ Read on for a listing of all available (sub)commands.
  * `/mtmmo help <subcommand>` - Displays the help text for a specific subcommand.
  * `/mtmmo skills` - Displays a HUD briefly that shows a listing of all your skills, 
                      their level, and current experience.
- * `/mtmmo rank` - Displays a HUD briefly that shows a list of all players that have been
+ * `/mtmmo ranks` - Displays a HUD briefly that shows a list of all players that have been
                    on the server and a total of all their skills combined.
 
 ## Mod compatibility

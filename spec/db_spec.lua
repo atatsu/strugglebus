@@ -13,6 +13,7 @@ describe("db", function()
 
     teardown(function()
         sqlite = nil
+        package.loaded["lsqlite3"] = nil
         db = nil
         package.loaded["db"] = nil
         constants = nil
@@ -132,6 +133,44 @@ describe("db", function()
             local id = db.add_player(name)
             db.save_skills(id, expected)
             local actual = db.load_skills(id)
+            assert.are.same(expected, actual)
+        end)
+    end)
+
+    describe("get_ranks", function()
+
+        local pid1
+        local pid2
+        local pid3
+
+        before_each(function()
+            -- as of right now there are four skills so each player after being
+            -- initialized will have a total of 4 with all skills combined
+            pid1 = db.add_player("testplayer1")
+            pid2 = db.add_player("testplayer2")
+            pid3 = db.add_player("testplayer3")
+            -- get some different skill levels applied
+            db.save_skills(pid1, {
+                [constants.DIGGING] = {level = 2, experience = 0},
+                [constants.MINING] = {level = 2, experience = 0},
+                [constants.LUMBERJACKING] = {level = 2, experience = 0},
+                [constants.CULTIVATING] = {level = 2, experience = 0},
+            })
+            db.save_skills(pid2, {
+                [constants.DIGGING] = {level = 4, experience = 0},
+                [constants.MINING] = {level = 4, experience = 0},
+                [constants.LUMBERJACKING] = {level = 4, experience = 0},
+                [constants.CULTIVATING] = {level = 4, experience = 0},
+            })
+        end)
+
+        it("should return a sum of each player's skill levels", function()
+            local expected = {
+                [1] = {name = "testplayer2", rank = 16},
+                [2] = {name = "testplayer1", rank = 8},
+                [3] = {name = "testplayer3", rank = 4}
+            }
+            local actual = db.get_ranks()
             assert.are.same(expected, actual)
         end)
     end)

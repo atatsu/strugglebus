@@ -45,6 +45,7 @@ end
 
 --- Handles chat commands.
 function M._process_chatcommand(name, param)
+    local mmoplayer = M.mmoplayers[name]
     local found, _, command, subcommand = param:find("^([^%s]+)%s*([^%s]*)$")
     if found == nil then
         return false, "Invalid command: " .. param
@@ -54,14 +55,30 @@ function M._process_chatcommand(name, param)
     elseif command == "skills" then
         -- format a list of all the player's skills and update the HUD
         -- with them
-        mmoplayer = M.mmoplayers[name]
         local skills = mmoplayer.skills
-        skill_text = "Skills\nName: Level (Experience)\n"
+        local skill_text = "Skills\nName: Level (Experience)\n"
         skill_text = string.format("%s%s\n", skill_text, string.rep("=", skill_text:len() - 8))
         for i, v in ipairs(constants.SKILLS) do
             skill_text = string.format("%s%s: %s (%s)\n", skill_text, v, skills[i].level, skills[i].experience)
         end
         mmoplayer:update_hud(skill_text, settings.hud_fade_time)
+    elseif command == "ranks" then
+        local ranks = db.get_ranks()
+        local rank_text = "Ranks\nName: Rank\n"
+        local rank_text = string.format(
+            "%s%s\n",
+            rank_text,
+            string.rep("=", rank_text:len() - 7)
+        )
+        for _, v in ipairs(ranks) do
+            rank_text = string.format(
+                "%s%s: %s\n",
+                rank_text,
+                v.name, 
+                v.rank
+            )
+        end
+        mmoplayer:update_hud(rank_text, settings.hud_fade_time)
     else
         return false, "Invalid subcommand: " .. param
     end
@@ -83,7 +100,7 @@ function M.init(modpath, worldpath)
     minetest.register_on_leaveplayer(M._register_on_leaveplayer)
     minetest.register_on_dignode(M._register_on_dignode)
     minetest.register_on_shutdown(M._register_on_shutdown)
-    minetest.register_chatcommand("mtmmo", {params = "<command>", func=M._process_chatcommand})
+    minetest.register_chatcommand("mtmmo", {params = "<command> (Use '/mtmmo help' for more info)", func=M._process_chatcommand})
 end
 
 return M
