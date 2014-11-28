@@ -1,4 +1,4 @@
 test:
-	busted
+	busted --helper=./spec/helper.lua
 
 .PHONY: test

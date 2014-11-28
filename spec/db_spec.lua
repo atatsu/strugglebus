@@ -4,17 +4,10 @@ describe("db", function()
     local db
     local name
     local constants
-    local mock_mt
 
     setup(function()
         sqlite = require("lsqlite3")
         constants = require("constants")
-        mock_mt = {
-            log = function(level, msg) end,
-            setting_getbool = function(name) end,
-            setting_get = function(name) end,
-        }
-        _G.minetest = mock_mt
         db = require("db")
     end)
 
@@ -24,8 +17,6 @@ describe("db", function()
         package.loaded["db"] = nil
         constants = nil
         package.loaded["constants"] = nil
-        mock_mt = nil
-        _G.minetest = nil
     end)
 
     before_each(function()

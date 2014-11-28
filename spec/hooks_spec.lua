@@ -7,46 +7,23 @@ describe("hooks", function()
     local settings
 
     setup(function()
-        -- setup a mock player object (the player object that is returned
-        -- by numerous `minetest` api calls
-        mock_player = {}
-        function mock_player:get_player_name()
-            return "testplayer"
-        end
-        function mock_player:hud_add(stuff)
-            return 1
-        end
-
-        -- setup a mock minetest object and add it to the globals table
-        mock_mt = {
-            register_on_joinplayer = function()end,
-            register_on_leaveplayer = function()end,
-            register_on_dignode = function()end,
-            register_chatcommand = function(cmd, cmd_def)end,
-            register_on_shutdown = function()end, 
-            setting_getbool = function(name)return false end,
-            setting_get = function(name)
-                if name == "mtmmo_hud_fade_time" then
-                    return 5
-                end
-            end
-        }
+        mock_mt = require("minetest")
+        mock_player = require("player")
         stub(mock_mt, "register_on_joinplayer")
         stub(mock_mt, "register_on_leaveplayer")
         stub(mock_mt, "register_on_dignode")
         stub(mock_mt, "register_chatcommand")
         stub(mock_mt, "register_on_shutdown")
-        function mock_mt.get_player_by_name(name)
-            return mock_player
-        end
-        _G.minetest = mock_mt
-
         entities = require("entities")
         MMOPlayer = entities.MMOPlayer
     end)
 
     teardown(function()
-        _G.minetest = nil
+        mock_mt.register_on_joinplayer:revert()
+        mock_mt.register_on_leaveplayer:revert()
+        mock_mt.register_on_dignode:revert()
+        mock_mt.register_chatcommand:revert()
+        mock_mt.register_on_shutdown:revert()
         mock_mt = nil
         entities = nil
         package.loaded["entities"] = nil
