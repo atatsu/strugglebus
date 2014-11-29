@@ -251,12 +251,17 @@ describe("hooks", function()
                 assert.are.equal(constants.HELP.skills, message)
             end)
 
-            it("and 'ranks' should return the help text for the 'rank' subcommand", function()
+            it("and 'ranks' should return the help text for the 'ranks' subcommand", function()
                 local success, message = hooks._process_chatcommand("testplayer", "help ranks")
                 assert.is_true(success)
                 assert.are.equal(constants.HELP.ranks, message)
             end)
 
+            it("and 'online' should return the help text for the 'online' subcommand", function()
+                local success, message = hooks._process_chatcommand("testplayer", "help online")
+                assert.is_true(success)
+                assert.are.equal(constants.HELP.online, message)
+            end)
         end)
 
         describe("when supplied with 'skills'", function()
@@ -329,6 +334,48 @@ describe("hooks", function()
                     settings.hud_fade_time
                 )
                 MMOPlayer.update_hud:revert()
+            end)
+
+            it("should return true when successful", function()
+                local success = hooks._process_chatcommand("testplayer", "ranks")
+                assert.is_true(success)
+            end)
+
+        end)
+
+        describe("when supplied with 'online'", function()
+
+            before_each(function()
+                hooks.mmoplayers["testplayer1"] = {}
+                hooks.mmoplayers["testplayer3"] = {}
+                hooks.mmoplayers["testplayer2"] = {}
+                hooks.mmoplayers["testplayer"] = MMOPlayer
+                stub(MMOPlayer, "update_hud")
+            end)
+
+            after_each(function()
+                hooks.mmoplayers["testplayer1"] = nil
+                hooks.mmoplayers["testplayer3"] = nil 
+                hooks.mmoplayers["testplayer2"] = nil
+                hooks.mmoplayers["testplayer"] = nil
+                MMOPlayer.update_hud:revert()
+            end)
+
+            it("should return true when successful", function()
+                local success = hooks._process_chatcommand("testplayer", "online")
+                assert.is_true(success)
+            end)
+
+            it("should output online players to the player that issued the command", function()
+                local expected_text = "Online Players\n==============\n" ..
+                    "testplayer\ntestplayer1\ntestplayer2\ntestplayer3\n"
+                hooks._process_chatcommand("testplayer", "online")                
+                assert.are.equal(expected_text, MMOPlayer.update_hud.calls[1][2])
+                assert.stub(MMOPlayer.update_hud).was.called_with(
+                    MMOPlayer,
+                    expected_text,
+                    settings.hud_fade_time
+                )
             end)
 
         end)

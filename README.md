@@ -40,6 +40,7 @@ Read on for a listing of all available (sub)commands.
                      their level, and current experience.
  * `/mtmmo ranks` - Displays a HUD briefly that shows a list of all players that have been
                    on the server and a total of all their skills combined.
+ * `/mtmmo online` - Displays a list of the current players online.
 
 ## Mod compatibility
 If a mod is listed here it means `mtMMO` is friendly with the given mod's 

@@ -13,9 +13,10 @@ M.SKILLS = {
 }
 
 M.HELP = {
-    help = "Available subcommands: skills, ranks\nUse /mtmmo help <subcommand> for specifics on a subcommand's function.",
+    help = "Available subcommands: online, ranks, skills\nUse /mtmmo help <subcommand> for specifics on a subcommand's function.",
     skills = "Display a list of all your skills, their level, and current experience. (/mtmmo skills)",
-    ranks = "Display a list of the rank (total of all skill levels) of all player's on the server (online and offline). (/mtmmo ranks)"
+    ranks = "Display a list of the rank (total of all skill levels) of all player's on the server (online and offline). (/mtmmo ranks)",
+    online = "Display a list of players currently online. (/mtmmo online)"
 }
 
 return M

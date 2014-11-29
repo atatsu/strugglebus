@@ -79,6 +79,22 @@ function M._process_chatcommand(name, param)
             )
         end
         mmoplayer:update_hud(rank_text, settings.hud_fade_time)
+    elseif command == "online" then
+        local current_players = {}
+        for k, _ in pairs(M.mmoplayers) do
+            current_players[#current_players+1] = k
+        end
+        table.sort(current_players)
+        local online_text = "Online Players\n"
+        online_text = string.format(
+            "%s%s\n", 
+            online_text,
+            string.rep("=", online_text:len() - 1)
+        )
+        for _, v in ipairs(current_players) do
+            online_text = string.format("%s%s\n", online_text, v)
+        end
+        mmoplayer:update_hud(online_text, settings.hud_fade_time)
     else
         return false, "Invalid subcommand: " .. param
     end
