@@ -23,7 +23,7 @@ describe("db", function()
     before_each(function()
         name = "testplayer"
         memdb = sqlite.open_memory()
-        db.init(".", nil, memdb)
+        db.init("./mtmmo", nil, memdb)
     end)
 
     after_each(function()
