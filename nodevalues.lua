@@ -1,17 +1,16 @@
 local constants = require("constants")
 
 local M = {
-    [constants.DIGGING] = {
-        ["default:dirt_with_grass"] = 10,
-        ["default:dirt"] = 10,
-    },
-    [constants.MINING] = {
-        ["default:stone"] = 10,
-    },
-    [constants.LUMBERJACKING] = {
-    },
-    [constants.CULTIVATING] = {
-    },
+    -- Digging 
+    ["default:dirt_with_grass"] = {constants.DIGGING, 10},
+    ["default:dirt"] = {constants.DIGGING, 10},
+
+    -- Mining
+    ["default:stone"] = {constants.MINING, 10},
+
+    -- Lumberjacking
+    
+    -- Cultivating
 }
 
 return M

@@ -58,19 +58,14 @@ end
 -- to warrant a rank up in whatever particular skill is being updated (if any).
 -- @param node_name Name of the node that was dug.
 function MMOPlayer:node_dug(node_name)
-    local exp
-    local skill_id
-    for k, v in pairs(nodevalues) do
-        exp = v[node_name]
-        if exp ~= nil then
-            skill_id = k
-            break
-        end
-    end
-    
-    if exp == nil then
+    local node_info = nodevalues[node_name]
+    if node_info == nil then
         return
     end
+
+    local exp
+    local skill_id
+    skill_id, exp = unpack(node_info)
 
     local skill = self.skills[skill_id]
     skill.experience = skill.experience + exp

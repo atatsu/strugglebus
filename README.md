@@ -24,7 +24,7 @@ a Linux distribution with a package manager it should be fairly trivial.
 
 ## Configuration
 * `hud_fade_time` - Controls the number of seconds that informative HUDs are displayed on 
-                  screen (for instance when running `mtmmo skills`). Default: `10`
+                  screen (for instance when running `/mtmmo skills`). Default: `10`
 * `database_name` - Name to give the database file that is created in the world's
                   directory. Default: `mtmmo.sqlite3`
 

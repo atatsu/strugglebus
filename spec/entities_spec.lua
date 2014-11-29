@@ -142,7 +142,7 @@ describe("entities", function()
             end)
 
             it("should apply experience to the appropriate skill", function()
-                local nodevalue = nodevalues[constants.DIGGING]["default:dirt"]
+                local nodevalue = nodevalues["default:dirt"][2]
                 local new_value = nodevalue + skills[constants.DIGGING].experience
                 mmoplayer:node_dug("default:dirt")
                 assert.are.equal(new_value, mmoplayer.skills[constants.DIGGING].experience)
