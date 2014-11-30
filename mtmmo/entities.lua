@@ -95,6 +95,10 @@ function MMOPlayer:node_dug(node_name)
                 skill.level
             )
         )
+        minetest.sound_play(
+            constants.SOUND_LEVEL_UP,
+            {to_player=self.name}
+        )
         self._db.save_skill(self.id, skill_id, skill.level, skill.experience)
     end
 end

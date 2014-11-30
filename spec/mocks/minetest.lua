@@ -26,4 +26,6 @@ function M.register_chatcommand(cmd, cmd_def) end
 
 function M.register_on_shutdown() end
 
+function M.sound_play(sound_spec, sound_params) end
+
 return M

@@ -17,7 +17,8 @@ TODO
 This mod will not work unless the below requirements are satisfied. Please refer to their
 respective documentations if you need help getting them setup/configured. If you're using
 a Linux distribution with a package manager it should be fairly trivial.
-* Minetest 0.4.10
+
+* Minetest 0.4.x (I've only used 0.4.10)
 * [SQLite3](http://www.sqlite.org/) (I'm using 3.8.7.2)
 * [LuaSQLite3](http://lua.sqlite.org/index.cgi/home)
  * [LuaRocks](http://luarocks.org/) makes this easy to get 
@@ -47,3 +48,7 @@ If a mod is listed here it means `mtMMO` is friendly with the given mod's
 nodes (for experience gained when digging a node and such).
 
 * default
+
+## Media licenses
+
+*mtmmo_levelup.ogg* is taken from [Wind-Chimes01.wav](http://www.freesound.org/people/Bassmonkey91/sounds/134070/) by **Bassmonkey91** ([CC BY 3.0](http://creativecommons.org/licenses/by/3.0/))

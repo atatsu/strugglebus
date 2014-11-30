@@ -153,6 +153,16 @@ describe("entities", function()
                 assert.are.equal(3, mmoplayer.skills[constants.MINING].level)
             end)
 
+            it("should play a sound when a level is gained", function()
+                stub(mock_mt, "sound_play")
+                mmoplayer:node_dug("default:stone")
+                assert.stub(mock_mt.sound_play).was.called_with(
+                    "mtmmo_levelup",
+                    {to_player = "testplayer"}
+                )
+                mock_mt.sound_play:revert()
+            end)
+
             it("should reset the experience in a leveled skill to 0", function()
                 mmoplayer:node_dug("default:stone")
                 assert.are.equal(0, mmoplayer.skills[constants.MINING].experience)

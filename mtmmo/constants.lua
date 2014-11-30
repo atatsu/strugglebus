@@ -19,4 +19,6 @@ M.HELP = {
     online = "Display a list of players currently online. (/mtmmo online)"
 }
 
+M.SOUND_LEVEL_UP = "mtmmo_levelup"
+
 return M
