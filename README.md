@@ -7,6 +7,18 @@ This mod was inspired by mcMMO but doesn't really aim to reproduce it. It'll
 have similarities I'm sure, but for the most part it's just my own spin
 on the idea.
 
+The primary thing (at least at this point) that the mod does is awards experience
+for nodes dug, depending on the type of node. Nodes that award experience all fall
+into a category specific to their type (Mining and Digging are a few example categories).
+Each category has a level, that can increase once enough experience has been accumulated.
+As you gain levels you'll unlock benefits specific to the category, which is not yet
+implemented, or even decided as to what these "benefits" are.
+
+For a complete listing of the experience gained from digging particular nodes see the 
+[Node Values page](https://github.com/atatsu/strugglebus/wiki/Node-Values) on the wiki.
+I haven't really thought about what appropriate experience values would be for each particular
+node so right now they're all the same.
+
 ### Short term goals
 TODO
 
@@ -51,4 +63,5 @@ nodes (for experience gained when digging a node and such).
 
 ## Media licenses
 
-*mtmmo_levelup.ogg* is taken from [Wind-Chimes01.wav](http://www.freesound.org/people/Bassmonkey91/sounds/134070/) by **Bassmonkey91** ([CC BY 3.0](http://creativecommons.org/licenses/by/3.0/))
+*mtmmo_levelup.ogg* is taken from [Wind-Chimes01.wav](http://www.freesound.org/people/Bassmonkey91/sounds/134070/) 
+by **Bassmonkey91** ([CC BY 3.0](http://creativecommons.org/licenses/by/3.0/))
