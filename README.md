@@ -16,8 +16,7 @@ implemented, or even decided as to what these "benefits" are.
 
 For a complete listing of the experience gained from digging particular nodes see the 
 [Node Values page](https://github.com/atatsu/strugglebus/wiki/Node-Values) on the wiki.
-I haven't really thought about what appropriate experience values would be for each particular
-node so right now they're all the same.
+At this point the experience values are very fluid. And I certainly welcome input.
 
 ### Short term goals
 TODO

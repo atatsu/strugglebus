@@ -130,6 +130,8 @@ describe("entities", function()
                     [constants.DIGGING] = {level = 1, experience = 50},
                     [constants.MINING] = {level = 2, experience = 190},
                 }
+                nodevalues["test:dirt"] = {constants.DIGGING, 10}
+                nodevalues["test:stone"] = {constants.MINING, 10}
                 mmoplayer = entities.MMOPlayer("testplayer", mock_db)
                 mmoplayer.id = 10
                 mmoplayer.skills = skills
@@ -142,20 +144,20 @@ describe("entities", function()
             end)
 
             it("should apply experience to the appropriate skill", function()
-                local nodevalue = nodevalues["default:dirt"][2]
+                local nodevalue = nodevalues["test:dirt"][2]
                 local new_value = nodevalue + skills[constants.DIGGING].experience
-                mmoplayer:node_dug("default:dirt")
+                mmoplayer:node_dug("test:dirt")
                 assert.are.equal(new_value, mmoplayer.skills[constants.DIGGING].experience)
             end)
 
             it("should level the skill if current exp >= 100 * current level", function()
-                mmoplayer:node_dug("default:stone")
+                mmoplayer:node_dug("test:stone")
                 assert.are.equal(3, mmoplayer.skills[constants.MINING].level)
             end)
 
             it("should play a sound when a level is gained", function()
                 stub(mock_mt, "sound_play")
-                mmoplayer:node_dug("default:stone")
+                mmoplayer:node_dug("test:stone")
                 assert.stub(mock_mt.sound_play).was.called_with(
                     "mtmmo_levelup",
                     {to_player = "testplayer"}
@@ -164,12 +166,12 @@ describe("entities", function()
             end)
 
             it("should reset the experience in a leveled skill to 0", function()
-                mmoplayer:node_dug("default:stone")
+                mmoplayer:node_dug("test:stone")
                 assert.are.equal(0, mmoplayer.skills[constants.MINING].experience)
             end)
 
             it("should save a skill's stats if a level is gained", function()
-                mmoplayer:node_dug("default:stone")
+                mmoplayer:node_dug("test:stone")
                 assert.stub(mock_db.save_skill).was.called_with(
                     mmoplayer.id, 
                     constants.MINING, 
@@ -179,7 +181,7 @@ describe("entities", function()
             end)
 
             it("should notify a player of a leveled skill", function()
-                mmoplayer:node_dug("default:stone")
+                mmoplayer:node_dug("test:stone")
                 local expected_msg = string.format(
                     "You gained a level in %s! (%s)",
                     constants.SKILLS[constants.MINING],
