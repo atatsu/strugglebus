@@ -28,4 +28,8 @@ function M.register_on_shutdown() end
 
 function M.sound_play(sound_spec, sound_params) end
 
+function M.check_player_privs(playername, privs)
+    return false
+end
+
 return M

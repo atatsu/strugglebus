@@ -156,6 +156,17 @@ describe("hooks", function()
             assert.stub(MMOPlayer.node_dug).was.called_with(MMOPlayer, "dirt")
             MMOPlayer.node_dug:revert()
         end)
+
+        it("should ignore players in creative mode", function()
+            local privs_orig = minetest.check_player_privs
+            minetest.check_player_privs = function(playername, privs) return true end
+            hooks.mmoplayers["testplayer"] = MMOPlayer
+            stub(MMOPlayer, "node_dug")
+            hooks._register_on_dignode({}, {name="dirt"}, mock_player)
+            assert.stub(MMOPlayer.node_dug).was.called(0)
+            MMOPlayer.node_dug:revert()
+            minetest.check_player_privs = privs_orig
+        end)
     end)
 
     describe("_register_on_shutdown", function()

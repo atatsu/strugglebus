@@ -24,6 +24,10 @@ end
 --- Handles a player digging up a node.
 function M._register_on_dignode(pos, oldnode, digger)
     local name = digger:get_player_name()
+    if minetest.check_player_privs(name, {creative = true}) or minetest.setting_getbool("creative_mode") then
+        return
+    end
+
     local mmoplayer = M.mmoplayers[name]
     mmoplayer:node_dug(oldnode.name)
 
