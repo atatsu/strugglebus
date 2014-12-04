@@ -3,6 +3,21 @@ local entities = require("entities")
 local constants = require("constants")
 local settings = require("settings")
 
+--- Sorts a dictionary table.
+local sort = function(t)
+    local keys = {}
+    for k in pairs(t) do keys[#keys+1] = k end
+    table.sort(keys)
+    local i = 0
+    local iter = function()
+        i = i + 1
+        if keys[i] == nil then return nil
+        else return keys[i], t[keys[i]]
+        end
+    end
+    return iter
+end
+
 local M = {}
 M.mmoplayers = {} -- stores currently connected players
 
@@ -57,14 +72,24 @@ function M._process_chatcommand(name, param)
         local text = constants.HELP[subcommand] or constants.HELP.help
         return true, text
     elseif command == "skills" then
-        -- format a list of all the player's skills and update the HUD
-        -- with them
-        local skills = mmoplayer.skills
+        -- format a list of all the player's skills and update the HUD with them
+        local skills = {}
+        for skill_id, skill_name in pairs(constants.SKILLS) do
+            skills[skill_name] = mmoplayer.skills[skill_id]
+        end
+
         local skill_text = "Skills\nName: Level (Experience)\n"
         skill_text = string.format("%s%s\n", skill_text, string.rep("=", skill_text:len() - 8))
-        for i, v in ipairs(constants.SKILLS) do
-            skill_text = string.format("%s%s: %s (%s)\n", skill_text, v, skills[i].level, skills[i].experience)
+        for skill_name, skill_stats in sort(skills) do
+            skill_text = string.format(
+                "%s%s: %s (%s)\n",
+                skill_text, 
+                skill_name, 
+                skill_stats.level,
+                skill_stats.experience
+            )
         end
+
         mmoplayer:update_hud(skill_text, settings.hud_fade_time)
     elseif command == "ranks" then
         local ranks = db.get_ranks()

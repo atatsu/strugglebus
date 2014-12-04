@@ -7,7 +7,8 @@ wiki:
 	@echo "Wiki generated."
 
 mod-nodes:
-	@grep -rn -e '["\047][[:alnum:]_][[:alnum:]_]*:[[:alnum:]_][[:alnum:]_]*["\047]' $(moddir) > /tmp/mod-nodes
-	@echo "Nodes in $(moddir) output to /tmp/mod-nodes."
+	@grep -rn -e '["\047][[:alnum:]_][[:alnum:]_]*:[[:alnum:]_][[:alnum:]_]*["\047]' $(moddir) | \
+		sed -r 's/([[:alnum:]/._-]+):([0-9]+).*["\047]([[:alnum:]_]+:[[:alnum:]_]+)["\047].*/\3 \1:\2/' | \
+		sort | column -t 
 
-.PHONY: test wiki
+.PHONY: test wiki mod-nodes

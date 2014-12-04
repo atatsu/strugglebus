@@ -281,16 +281,12 @@ describe("hooks", function()
                 stub(MMOPlayer, "update_hud")
                 local success = hooks._process_chatcommand("testplayer", "skills")
                 assert.is_true(success)
-                local expected_text = "Skills\nName: Level (Experience)\n========================\n"
-                for i, v in ipairs(skills) do
-                    expected_text = string.format(
-                        "%s%s: %s (%s)\n", 
-                        expected_text, 
-                        constants.SKILLS[i], 
-                        v.level, 
-                        v.experience
-                    )
-                end
+                local expected_text = "Skills\nName: Level (Experience)\n"
+                    .. "========================\n"
+                    .. "Cultivating: 4 (400)\n"
+                    .. "Digging: 1 (100)\n"
+                    .. "Lumberjacking: 3 (300)\n"
+                    .. "Mining: 2 (200)\n"
                 assert.stub(MMOPlayer.update_hud).was.called(1)
                 --assert.are.equal(expected_text, MMOPlayer.update_hud.calls[1][2]) -- [1][1] is the stub itself
                 --assert.are.equal(5, MMOPlayer.update_hud.calls[1][3])
