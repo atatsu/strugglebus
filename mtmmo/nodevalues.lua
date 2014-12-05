@@ -44,8 +44,19 @@ local M = {
     ["default:apple"] = {constants.CULTIVATING, 4},
     -- }}}
     -- {{{ Cultivating `farming`
-    ["farming:wheat_8"] = {constants.CULTIVATING, 10},
-    ["farming:cotton"] = {constants.CULTIVATING, 13},
+    ["farming:wheat_8"] = {constants.CULTIVATING, 15},
+    ["farming:cotton_8"] = {constants.CULTIVATING, 15},
+    ["farming:potato_4"] = {constants.CULTIVATING, 10},
+    ["farming:raspberry_4"] = {constants.CULTIVATING, 10},
+    ["farming:rhubarb_3"] = {constants.CULTIVATING, 8},
+    ["farming:corn_8"] = {constants.CULTIVATING, 15},
+    ["farming:tomato_8"] = {constants.CULTIVATING, 15},
+    ["farming:carrot_8"] = {constants.CULTIVATING, 15},
+    ["farming:coffee_5"] = {constants.CULTIVATING, 13},
+    ["farming:cucumber_4"] = {constants.CULTIVATING, 10},
+    ["farming:blueberry_4"] = {constants.CULTIVATING, 10},
+    ["farming:melon_8"] = {constants.CULTIVATING, 15},
+    ["farming:pumpkin"] = {constants.CULTIVATING, 10},
     -- }}}
     -- {{{ Cultivating `flowers`
     ["flowers:dandelion_white"] = {constants.CULTIVATING, 3},
