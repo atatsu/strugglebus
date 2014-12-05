@@ -38,17 +38,13 @@ local M = {
     -- }}}
     
     -- {{{ Cultivating `default`
-    ["default:grass_1"] = {constants.CULTIVATING, 1},
-    ["default:grass_2"] = {constants.CULTIVATING, 1},
-    ["default:grass_3"] = {constants.CULTIVATING, 1},
-    ["default:grass_4"] = {constants.CULTIVATING, 1},
     ["default:grass_5"] = {constants.CULTIVATING, 1},
     ["default:papyrus"] = {constants.CULTIVATING, 5},
     ["default:junglegrass"] = {constants.CULTIVATING, 3},
     ["default:apple"] = {constants.CULTIVATING, 4},
     -- }}}
     -- {{{ Cultivating `farming`
-    ["farming:wheat"] = {constants.CULTIVATING, 10},
+    ["farming:wheat_8"] = {constants.CULTIVATING, 10},
     ["farming:cotton"] = {constants.CULTIVATING, 13},
     -- }}}
     -- {{{ Cultivating `flowers`
